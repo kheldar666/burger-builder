@@ -9,16 +9,15 @@ const withErrorHandler = (WrappedComponent, axios) => {
             error: null
         }
 
-        componentDidMount() {
-            this.reqInterceptor = axios.interceptors.request.use(request => {
-                console.log(request)
-                this.setState({error:null});
-                return request;
-            })
+        constructor(props) {
+            super(props);
+            this.reqInterceptor = axios.interceptors.request.use(config => {
+                this.errorConfirmedHandler();
+                return config;
+            });
             this.respInterceptor = axios.interceptors.response.use(response => response, error => {
-                console.log(error)
-                this.setState({error:error});
-            })
+                this.newErrorHandler(error)
+            });
         }
 
         componentWillUnmount() {
@@ -28,6 +27,10 @@ const withErrorHandler = (WrappedComponent, axios) => {
 
         errorConfirmedHandler = () => {
             this.setState({error:null});
+        }
+
+        newErrorHandler = (error) => {
+            this.setState({error:error});
         }
 
         render() {
@@ -42,5 +45,8 @@ const withErrorHandler = (WrappedComponent, axios) => {
         }
     }
 }
+
+
+
 
 export default withErrorHandler;
