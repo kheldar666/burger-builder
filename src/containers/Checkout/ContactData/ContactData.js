@@ -4,15 +4,56 @@ import classes from './ContactData.module.css'
 import axios from '../../../axios-orders'
 import Spinner from '../../../components/UI/Spinner/Spinner'
 import Input from '../../../components/UI/Input/Input'
+import {elementType} from "prop-types";
 
 class ContactData extends Component {
 
     state = {
-        name: '',
-        email: '',
-        address: {
-            street:'',
-            postalCode: ''
+        orderForm: {
+            name:{
+                elementType:'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder:'Your name'
+                }
+            },
+            address:{
+                elementType:'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder:'Address'
+                }
+            },
+            zipCode:{
+                elementType:'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder:'ZIP COde'
+                }
+            },
+            country:{
+                elementType:'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder:'Country'
+                }
+            },
+            email:{
+                elementType:'input',
+                elementConfig: {
+                    type: 'email',
+                    placeholder:'Your e-mail'
+                }
+            },
+            deliveryMethod:{
+                elementType:'select',
+                elementConfig: {
+                    options: [
+                        {value:'fastest', displayValue:'Fastest'},
+                        {value:'cheapest', displayValue:'Cheapest'}
+                    ]
+                }
+            },
         },
         loading:false
     }
@@ -46,13 +87,25 @@ class ContactData extends Component {
     }
 
     render() {
-        let form = (<form>
-                    <Input type="text" name="name" placeholder="Your Name" inputtype="input"/>
-                    <Input type="email" name="email" placeholder="Your e-mail" inputtype="input"/>
-                    <Input type="text" name="street" placeholder="Street" inputtype="input"/>
-                    <Input type="text" name="postal" placeholder="Postal Code" inputtype="input"/>
-                    <Button btnType="Success" click={this.orderHandler}>ORDER</Button>
-                </form>);
+        const formElementsArray = [];
+        for(let key in this.state.orderForm) {
+            formElementsArray.push({
+                    id:key,
+                    config: this.state.orderForm[key]
+            });
+        };
+        let form = (
+            <form>
+                 <Input elementType="..." elementConfig="..." value="..."/>
+                {formElementsArray.map(formElement =>(
+                    <Input
+                        elementType={formElement.config.elementType}
+                        elementConfig={formElement.config.elementConfig}
+                        value={formElement.config.elementValue}
+                ))}
+                 <Button btnType="Success" click={this.orderHandler}>ORDER</Button>
+            </form>
+        );
 
         if(this.state.loading){
             form = <Spinner />
